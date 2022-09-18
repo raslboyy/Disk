@@ -1,0 +1,6 @@
+{
+  "backup_file": "backup.json",
+  "address": "127.0.0.1",
+  "port": 8080,
+  "n_treads": 4
+}

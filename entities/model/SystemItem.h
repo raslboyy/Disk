@@ -27,7 +27,7 @@ class SystemItem {
   void update_url(std::string_view url) { url_ = std::string{url}; }
   void update_date(std::string_view date) { date_ = std::string{date}; }
   void update_parentId(std::string_view parentId) { parentId_ = std::string{parentId}; }
-  void update_size(int64_t size) { size_ = size + 1; }
+  void update_size(int64_t size) { size_ = size; }
   void update(const SystemItem &item);
 
   friend void tag_invoke(boost::json::value_from_tag, boost::json::value &jv, const SystemItem &item);

@@ -2,7 +2,7 @@ FROM ubuntu:latest
 ARG DEBIAN_FRONTEND=noninteractive
 # Install required build dependencies
 RUN apt-get -y update && apt-get install -y
-RUN apt-get -y install g++ cmake git
+RUN apt-get -y install g++ cmake git libboost-dev libboost-program-options-dev libboost-all-dev libblkid-dev e2fslibs-dev libaudit-dev
 
 RUN apt-get update && apt-get -y --no-install-recommends install \
     build-essential \

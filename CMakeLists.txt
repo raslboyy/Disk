@@ -7,7 +7,7 @@ SET(CMAKE_CXX_FLAGS -pthread)
 SET(Boost_USE_STATIC_LIBS ON)
 set(Boost_USE_MULTITHREADED ON)
 FIND_PACKAGE(Boost
-        1.77
+        1.80
         COMPONENTS log_setup log json
         REQUIRED)
 include_directories(Boost::log Boost::json)

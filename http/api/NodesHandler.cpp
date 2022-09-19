@@ -19,40 +19,39 @@ RouterResponse NodesHandler::handle_message<MessageType::get>(RouterRequest &&re
   response.status = 200;
 
   auto id = get_id(request.target);
-  log(logging::trivial::debug, "get: id=" + id);
+  LOG(debug) << std::string("get: id=" + id);
   if (!validate(id)) {
     response.status = 404;
     response.body = "Validation Failed";
-    log(logging::trivial::debug, "get: validation failed");
+    LOG(info) << "get: validation failed";
     return response;
   }
-  log(logging::trivial::debug, "get: validation complete");
+  LOG(debug) << "get: validation complete";
 
   auto res = getter_->get(id);
   if (res == nullptr) {
     response.status = 404;
     response.body = "Item not found";
-    log(logging::trivial::debug, "get: item not found");
+    LOG(info) << "get: item not found";
     return response;
   }
-  log(logging::trivial::debug, "get: got");
+  LOG(debug) << "get: got";
 
   response.body = serializer_->serialize(*res);
-  log(logging::trivial::debug, "get: serialized");
+  LOG(debug) << "get: serialized";
 
   return response;
 }
 
 RouterResponse NodesHandler::handle(RouterRequest &&request) {
   RouterResponse response;
-  auto lg = my_logger::get();
   auto type = request.type;
 
   if (type == MessageType::get) {
-    BOOST_LOG_SEV(lg, logging::trivial::debug) << "move to get handler";
+    LOG(debug) << "move to get handler";
     response = handle_message<MessageType::get>(std::move(request));
   } else {
-    BOOST_LOG_SEV(lg, logging::trivial::warning) << "move to unknown handler";
+    LOG(warning) << "move to unknown handler";
   }
 
   return response;

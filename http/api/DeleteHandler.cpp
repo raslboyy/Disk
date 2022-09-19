@@ -29,38 +29,37 @@ RouterResponse DeleteHandler::handle_message<MessageType::delete_>(RouterRequest
 
   auto id = get_id(request.target);
   auto date = get_date(request.target);
-  log(logging::trivial::debug, "delete: id=" + id + " date=" + date);
+  LOG(debug) << std::string("delete: id=" + id + " date=" + date);
 
   if (!validate(id, date)) {
     response.status = 400;
     response.body = "Validation Failed";
-    log(logging::trivial::debug, "delete: validation failed");
+    LOG(debug) << "delete: validation failed";
     return response;
   }
-  log(logging::trivial::debug, "delete: validation complete");
+  LOG(debug) << "delete: validation complete";
 
   auto deleted = eraser_->delete_(id, date);
   if (!deleted) {
     response.status = 404;
     response.body = "Item not found";
-    log(logging::trivial::debug, "delete: item not found");
+    LOG(debug) << "delete: item not found";
     return response;
   }
-  log(logging::trivial::info, "delete: deleted");
+  LOG(debug) << "delete: deleted";
 
   return response;
 }
 
 RouterResponse DeleteHandler::handle(RouterRequest &&request) {
   RouterResponse response;
-  auto lg = my_logger::get();
   auto type = request.type;
 
   if (type == MessageType::delete_) {
-    BOOST_LOG_SEV(lg, logging::trivial::debug) << "move to delete_child handler";
+    LOG(debug) << "move to delete_child handler";
     response = handle_message<MessageType::delete_>(std::move(request));
   } else {
-    BOOST_LOG_SEV(lg, logging::trivial::warning) << "move to unknown handler";
+    LOG(debug) << "move to unknown handler";
   }
 
   return response;

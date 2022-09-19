@@ -31,31 +31,31 @@ RouterResponse ImportsHandler::handle_message<MessageType::post>(RouterRequest &
   response.body = "Validation Failed";
 
   if (!fast_json_check(request.body)) {
-    log(logging::trivial::info, "invalid json in request");
+    LOG(info) << "invalid json in request";
     return response;
   }
 
   SystemItemImportRequest system_item_import_request(std::move(deserializer_->deserialize(request.body)));
-  log(logging::trivial::debug, "request deserialized");
+  LOG(debug) << "request deserialized";
 
   if (!raw_validator_->validate(system_item_import_request)) {
-    log(logging::trivial::info, "invalid request");
+    LOG(info) << "invalid request";
     return response;
   }
-  log(logging::trivial::debug, "request completed raw validation");
+  LOG(debug) << "request completed raw validation";
 
   auto system_item_list = SystemItemList(system_item_import_request);
   if (!validator_->is_can_be_putted(system_item_list)) {
-    log(logging::trivial::info, "invalid request");
+    LOG(info) << "invalid request";
     return response;
   }
-  log(logging::trivial::debug, "request can be putted");
+  LOG(debug) << "request can be putted";
 
   if (!putter_->put(std::move(system_item_list))) {
-    log(logging::trivial::info, "invalid request");
+    LOG(info) << "invalid request";
     return response;
   }
-  log(logging::trivial::info, "request putted");
+  LOG(debug) << "request putted";
 
   response.status = valid_request;
   response.body = "";
@@ -64,14 +64,13 @@ RouterResponse ImportsHandler::handle_message<MessageType::post>(RouterRequest &
 
 RouterResponse ImportsHandler::handle(RouterRequest &&request) {
   RouterResponse response;
-  auto lg = my_logger::get();
   auto type = request.type;
 
   if (type == MessageType::post) {
-    BOOST_LOG_SEV(lg, logging::trivial::debug) << "move to post handler";
+    LOG(debug) << "move to post handler";
     response = handle_message<MessageType::post>(std::move(request));
   } else {
-    BOOST_LOG_SEV(lg, logging::trivial::warning) << "move to unknown handler";
+    LOG(warning) << "move to unknown handler";
   }
 
   return response;

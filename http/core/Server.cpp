@@ -1,14 +1,10 @@
 #include "Server.h"
-#include "../Config.h"
+#include "../../tools/Config.h"
 #include "../api/Router.h"
 
 void server_run() {
-  auto lg = my_logger::get();
-  BOOST_LOG_SEV(lg, logging::trivial::info) << "start execution";
 
   auto config = Config::get_instance();
-  BOOST_LOG_SEV(lg, logging::trivial::info) << "config load";
-
   unsigned short threads = config->n_threads;
   unsigned short port = config->port;
   std::string address = config->address;
@@ -21,7 +17,7 @@ void server_run() {
       tcp::endpoint{net::ip::make_address(address), port}
   )->run();
 
-  BOOST_LOG_SEV(lg, logging::trivial::info) << "server started";
+  LOG(info) << "server started";
 
   std::vector<std::thread> v;
   v.reserve(threads - 1);
@@ -31,6 +27,8 @@ void server_run() {
           ioc.run();
         });
   ioc.run();
+
+  LOG(info) << "server stopped";
 }
 
 void signal_handler(int sig_num) {
